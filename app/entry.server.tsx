@@ -1,136 +1,102 @@
+/* eslint-disable prefer-arrow/prefer-arrow-functions,no-console */
 /**
  * By default, Remix will handle generating the HTTP Response for you.
  * You are free to delete this file if you'd like to, but if you ever want it revealed again, you can run `npx remix reveal` ✨
  * For more information, see https://remix.run/file-conventions/entry.server
  */
 
-import { PassThrough } from "node:stream";
+import {I18nextProvider, initReactI18next} from 'react-i18next';
+import type {EntryContext} from '@remix-run/node';
+import {createReadableStreamFromReadable} from '@remix-run/node';
+import {RemixServer} from '@remix-run/react';
+import {createInstance} from 'i18next';
+import {isbot} from 'isbot';
+import {renderToPipeableStream} from 'react-dom/server';
+import {PassThrough} from 'node:stream';
+import {getLanguageSession} from '~/sessions.server/language';
+import i18n from './i18n';
+import i18next from './i18next.server';
+import 'dotenv/config';
 
-import type { AppLoadContext, EntryContext } from "@remix-run/node";
-import { createReadableStreamFromReadable } from "@remix-run/node";
-import { RemixServer } from "@remix-run/react";
-import { isbot } from "isbot";
-import { renderToPipeableStream } from "react-dom/server";
+const ABORT_DELAY = 5000;
 
-const ABORT_DELAY = 5_000;
-
-export default function handleRequest(
-  request: Request,
-  responseStatusCode: number,
-  responseHeaders: Headers,
-  remixContext: EntryContext,
-  // This is ignored so we can keep it in the template for visibility.  Feel
-  // free to delete this parameter in your app if you're not using it!
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  loadContext: AppLoadContext
-) {
-  return isbot(request.headers.get("user-agent") || "")
-    ? handleBotRequest(
-        request,
-        responseStatusCode,
-        responseHeaders,
-        remixContext
-      )
-    : handleBrowserRequest(
-        request,
-        responseStatusCode,
-        responseHeaders,
-        remixContext
-      );
-}
-
-function handleBotRequest(
+// eslint-disable-next-line max-params
+export default async function handleRequest(
   request: Request,
   responseStatusCode: number,
   responseHeaders: Headers,
   remixContext: EntryContext
 ) {
-  return new Promise((resolve, reject) => {
-    let shellRendered = false;
-    const { pipe, abort } = renderToPipeableStream(
-      <RemixServer
-        context={remixContext}
-        url={request.url}
-        abortDelay={ABORT_DELAY}
-      />,
-      {
-        onAllReady() {
-          shellRendered = true;
-          const body = new PassThrough();
-          const stream = createReadableStreamFromReadable(body);
+  const url = new URL(request.url);
 
-          responseHeaders.set("Content-Type", "text/html");
+  // disallow www subdomain
+  if (url.host.includes('www.')) {
+    url.host = url.host.replace('www.', '');
 
-          resolve(
-            new Response(stream, {
-              headers: responseHeaders,
-              status: responseStatusCode,
-            })
-          );
+    return Response.redirect(url.toString(), 301);
+  }
 
-          pipe(body);
-        },
-        onShellError(error: unknown) {
-          reject(error);
-        },
-        onError(error: unknown) {
-          responseStatusCode = 500;
-          // Log streaming rendering errors from inside the shell.  Don't log
-          // errors encountered during initial shell rendering since they'll
-          // reject and get logged in handleDocumentRequest.
-          if (shellRendered) {
-            console.error(error);
-          }
-        },
-      }
-    );
+  // remove trailing slash on all routes
+  if (url.pathname !== '/' && url.pathname.endsWith('/')) {
+    url.pathname = url.pathname.slice(0, -1);
 
-    setTimeout(abort, ABORT_DELAY);
+    return Response.redirect(url.toString(), 301);
+  }
+
+  const userAgent = request.headers.get('user-agent') ?? '';
+
+  const callbackName = isbot(userAgent) ? 'onAllReady' : 'onShellReady';
+
+  const instance = createInstance({detection: {}});
+  const languageCookie = await getLanguageSession(request);
+  const detectedLanguage = await i18next.getLocale(request);
+  const lng = languageCookie.get() || detectedLanguage;
+  const ns = i18next.getRouteNamespaces(remixContext);
+
+  await instance.use(initReactI18next).init({
+    ...i18n,
+    lng,
+    ns,
   });
-}
 
-function handleBrowserRequest(
-  request: Request,
-  responseStatusCode: number,
-  responseHeaders: Headers,
-  remixContext: EntryContext
-) {
   return new Promise((resolve, reject) => {
-    let shellRendered = false;
-    const { pipe, abort } = renderToPipeableStream(
-      <RemixServer
-        context={remixContext}
-        url={request.url}
-        abortDelay={ABORT_DELAY}
-      />,
-      {
-        onShellReady() {
-          shellRendered = true;
-          const body = new PassThrough();
-          const stream = createReadableStreamFromReadable(body);
+    let didError = false;
 
-          responseHeaders.set("Content-Type", "text/html");
+    const {abort, pipe} = renderToPipeableStream(
+      <I18nextProvider i18n={instance}>
+        <RemixServer context={remixContext} url={request.url} />
+      </I18nextProvider>,
+      {
+        [callbackName]: () => {
+          const body = new PassThrough();
+
+          responseHeaders.set('Content-Type', 'text/html');
+
+          /* Optional Response Headers
+          responseHeaders.set(
+            'Strict-Transport-Security',
+            'max-age=31536000; includeSubDomains'
+          );
+          responseHeaders.set('X-Content-Type-Options', 'nosniff');
+          responseHeaders.set('X-Frame-Options', 'DENY');
+          */
 
           resolve(
-            new Response(stream, {
+            new Response(createReadableStreamFromReadable(body), {
               headers: responseHeaders,
-              status: responseStatusCode,
+              status: didError ? 500 : responseStatusCode,
             })
           );
 
           pipe(body);
         },
+        onError(error: unknown) {
+          didError = true;
+
+          console.error(error);
+        },
         onShellError(error: unknown) {
           reject(error);
-        },
-        onError(error: unknown) {
-          responseStatusCode = 500;
-          // Log streaming rendering errors from inside the shell.  Don't log
-          // errors encountered during initial shell rendering since they'll
-          // reject and get logged in handleDocumentRequest.
-          if (shellRendered) {
-            console.error(error);
-          }
         },
       }
     );

@@ -4,9 +4,26 @@
 
 ## Development
 
-Run the dev server:
+Make sure you have [Node.js](https://nodejs.org/en/) LTS installed.
 
-```shellscript
+You need to create a `.env` file. Duplicate the `.env.example` file.
+
+## Install packages
+
+```sh
+npm install
+npx playwright install
+```
+
+## Storybook
+
+```sh
+npm run storybook
+```
+
+## Remix
+
+```sh
 npm run dev
 ```
 
@@ -38,3 +55,39 @@ Make sure to deploy the output of `npm run build`
 ## Styling
 
 This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever css framework you prefer. See the [Vite docs on css](https://vitejs.dev/guide/features.html#css) for more information.
+
+## Icons
+
+[FontAwesome](https://fontawesome.com/) is included. Feel free to swap out with whatever you want.
+
+## i18n
+
+[Remix-i18next](https://github.com/sergiodxa/remix-i18next) is included with some simple examples.
+
+Storybook is also set up with i18n support.
+
+## Testing
+
+The test harness is set up with unit, integration and end-to-end tests.
+
+### Unit and Integration Tests
+
+[React Testing Library](https://testing-library.com/docs/react-testing-library/intro/) running in [vitest](https://vitest.dev/)
+
+```sh
+  npm t
+```
+
+### E2E Tests
+
+[PlayWright](https://playwright.dev/docs/intro)
+
+```sh
+npx playwright test
+```
+
+Interactive mode:
+
+```sh
+npx playwright test --ui
+```
