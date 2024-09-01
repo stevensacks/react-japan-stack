@@ -6,10 +6,10 @@ type VersionProps = {
 };
 
 const Version: FC<VersionProps> = ({className}) => (
-  <div className={twMerge(className)}>
+  <span className={twMerge('text-sm', className)}>
     <span>{process.env.npm_package_version}</span>
     {process.env.COMMIT_HASH && <span> - {process.env.COMMIT_HASH}</span>}
-  </div>
+  </span>
 );
 
 export default Version;
