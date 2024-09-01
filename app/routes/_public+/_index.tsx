@@ -1,7 +1,7 @@
 import type {LoaderFunctionArgs, MetaFunction} from '@remix-run/node';
 import {json} from '@remix-run/node';
 import i18next from '~/i18next.server';
-import IndexPage from '~/pages/IndexPage';
+import IndexPage from '~/pages/Public/IndexPage';
 
 export const loader = async ({request}: LoaderFunctionArgs) => {
   const t = await i18next.getFixedT(request, 'pages');
@@ -19,6 +19,6 @@ export const meta: MetaFunction<typeof loader> = ({data}) => [
   },
 ];
 
-const Index = () => <IndexPage />;
+const IndexRoute = () => <IndexPage />;
 
-export default Index;
+export default IndexRoute;

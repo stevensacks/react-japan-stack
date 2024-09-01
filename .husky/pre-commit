@@ -1,4 +1,6 @@
-printf '\n🔎 Running pre-commit check'
+printf "\x1b[33m"
+printf '\n🔎 Running pre-commit check\n'
+printf "\x1b[0m"
 
 declare HAS_APP_CHANGED=$(git diff --cached --name-only --diff-filter=ACDM | grep 'app/')
 declare HAS_TEST_CHANGED=$(git diff --cached --name-only --diff-filter=ACM | grep 'test/')
@@ -10,5 +12,7 @@ then
 	npx lint-staged
 	npm run test:lint-staged
 else
+    printf "\x1b[32m"
     printf "\n✅  No changed files -- skipping lint-staged\n"
+    printf "\x1b[0m"
 fi

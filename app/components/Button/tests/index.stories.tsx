@@ -1,5 +1,5 @@
 import {Fragment} from 'react';
-import {faRightToBracket} from '@fortawesome/free-solid-svg-icons';
+import {faStar} from '@fortawesome/free-solid-svg-icons';
 import type {Meta, StoryFn} from '@storybook/react';
 import {twJoin} from 'tailwind-merge';
 import type {Size} from '~/types';
@@ -57,7 +57,7 @@ const render = (
               key={variant}
               className="col-span-2 capitalize"
               disabled={disabled}
-              icon={icon ? faRightToBracket : undefined}
+              icon={icon ? faStar : undefined}
               isLoading={isLoading}
               size={size}
               variant={variant}

@@ -104,15 +104,14 @@ export const toSnakeCase = <T = unknown>(obj: unknown) =>
 export const toCamelCase = <T = unknown>(obj: unknown) =>
   obj ? (convertCase(camelCase, obj) as T) : undefined;
 
-export const withValues = (
+export const compact = (
   obj: Record<string, unknown>,
-  keepFalsy?: boolean,
-  keepEmptyArray?: boolean
+  options?: {keepEmptyArray?: boolean; keepFalsy?: boolean}
 ): Record<string, unknown> =>
   Object.entries(obj).reduce((acc: Record<string, unknown>, [key, value]) => {
     if (
-      ((keepFalsy && !isNil(value)) || value) &&
-      (!Array.isArray(value) || keepEmptyArray || value.length > 0)
+      ((options?.keepFalsy && !isNil(value)) || value) &&
+      (!Array.isArray(value) || options?.keepEmptyArray || value.length > 0)
     ) {
       acc[key] = value;
     }

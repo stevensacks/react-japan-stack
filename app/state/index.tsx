@@ -1,22 +1,28 @@
-// eslint-disable-next-line canonical/filename-match-exported
+/* eslint-disable canonical/filename-match-exported */
 import type {FC, ReactNode} from 'react';
+import type {User} from '~/services/auth/types';
+import {ExampleProvider} from '~/state/example';
 import type {Theme} from '~/state/theme';
 import {ThemeProvider} from '~/state/theme';
-import {ThingProvider} from '~/state/thing';
-import type {Maybe, Thing} from '~/types';
+import {UserProvider} from '~/state/user';
+import type {Maybe} from '~/types';
 
 type StateProps = {
+  example?: Maybe<string>;
   theme?: Theme;
-  thing?: Maybe<Thing>;
+  user?: Maybe<User>;
 };
 
 const State: FC<{children: ReactNode} & StateProps> = ({
   children,
+  example,
   theme,
-  thing,
+  user,
 }) => (
   <ThemeProvider initialState={theme}>
-    <ThingProvider initialState={thing}>{children}</ThingProvider>
+    <UserProvider initialState={user}>
+      <ExampleProvider initialState={example}>{children}</ExampleProvider>
+    </UserProvider>
   </ThemeProvider>
 );
 

@@ -14,9 +14,15 @@ import {isbot} from 'isbot';
 import {renderToPipeableStream} from 'react-dom/server';
 import {PassThrough} from 'node:stream';
 import {getLanguageSession} from '~/sessions.server/language';
+import {startApiMocks} from '../test/msw.server';
+import {env} from './env.server';
 import i18n from './i18n';
 import i18next from './i18next.server';
 import 'dotenv/config';
+
+if (env.NODE_ENV === 'development' && env.MSW_ENABLED) {
+  startApiMocks();
+}
 
 const ABORT_DELAY = 5000;
 
@@ -42,6 +48,14 @@ export default async function handleRequest(
 
     return Response.redirect(url.toString(), 301);
   }
+
+  /* Optionally force lowercase URLs to prevent duplicate content for SEO
+  if (url.pathname !== url.pathname.toLowerCase()) {
+    url.pathname = url.pathname.toLowerCase();
+
+    return Response.redirect(url.toString(), 301);
+  }
+  */
 
   const userAgent = request.headers.get('user-agent') ?? '';
 
@@ -72,7 +86,7 @@ export default async function handleRequest(
 
           responseHeaders.set('Content-Type', 'text/html');
 
-          /* Optional Response Headers
+          /* Optional response headers for SEO
           responseHeaders.set(
             'Strict-Transport-Security',
             'max-age=31536000; includeSubDomains'

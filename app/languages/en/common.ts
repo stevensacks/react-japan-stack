@@ -5,7 +5,7 @@ export default {
     days_other: '{{count}} days',
   },
   meta: {
-    siteName: 'Site name',
+    siteName: 'GAIA React',
   },
   next: 'Next',
   previous: 'Previous',

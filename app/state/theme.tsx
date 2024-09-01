@@ -2,37 +2,30 @@ import type {Dispatch, FC, ReactNode, SetStateAction} from 'react';
 import {createContext, useContext, useEffect, useRef, useState} from 'react';
 import {useFetcher} from '@remix-run/react';
 import type {Maybe} from '~/types';
+import {noop} from '~/utils/functions';
+
+// Based on a combination of Kent C Dodds' and Matt Stobb's blog posts:
+// https://kentcdodds.com/blog/how-to-use-react-context-effectively
+// https://www.mattstobbs.com/remix-dark-mode/
 
 export type Theme = Maybe<'dark' | 'light'>;
 const themes = ['dark', 'light'];
 
 const LOCAL_STORAGE_KEY = 'theme';
 
-const ThemeStateContext = createContext<Theme>(undefined);
+type ThemeContextValue = [Theme, Dispatch<SetStateAction<Theme>>];
 
-const ThemeDispatchContext = createContext<
-  Dispatch<SetStateAction<Theme>> | undefined
->(undefined);
+const ThemeContext = createContext<ThemeContextValue>([undefined, noop]);
 
-export const useThemeState = (): Theme => useContext(ThemeStateContext);
+export const useTheme = () => {
+  const context = useContext(ThemeContext) as Maybe<ThemeContextValue>;
 
-export const useThemeDispatch = (): Dispatch<SetStateAction<Theme>> => {
-  const context = useContext(ThemeDispatchContext);
-
-  /* istanbul ignore next */
-  if (context === undefined) {
-    throw new Error(
-      'useThemeDispatch must be used within an ThemeStateProvider'
-    );
+  if (!context) {
+    throw new Error('useTheme must be used within a ThemeProvider');
   }
 
   return context;
 };
-
-export const useTheme = (): [Theme, Dispatch<SetStateAction<Theme>>] => [
-  useThemeState(),
-  useThemeDispatch(),
-];
 
 const prefersDarkMQ = '(prefers-color-scheme: dark)';
 
@@ -59,7 +52,8 @@ export const ThemeProvider: FC<ThemeProviderProps> = ({
   children,
   initialState,
 }) => {
-  const [theme, setTheme] = useState<null | Theme>(() => {
+  // eslint-disable-next-line sonarjs/hook-use-state
+  const state = useState<Maybe<Theme>>(() => {
     // On the server, if we don't have a specified theme then we should
     // return null and the clientThemeCode will set the theme for us
     // before hydration. Then (during hydration), this code will get the same
@@ -80,6 +74,8 @@ export const ThemeProvider: FC<ThemeProviderProps> = ({
 
     return getPreferredTheme();
   });
+
+  const [theme, setTheme] = state;
 
   const persistTheme = useFetcher();
   // TODO: remove this when persistTheme is memoized properly
@@ -123,14 +119,10 @@ export const ThemeProvider: FC<ThemeProviderProps> = ({
     mediaQuery.addEventListener('change', handleChange);
 
     return () => mediaQuery.removeEventListener('change', handleChange);
-  }, []);
+  }, [setTheme]);
 
   return (
-    <ThemeStateContext.Provider value={theme}>
-      <ThemeDispatchContext.Provider value={setTheme}>
-        {children}
-      </ThemeDispatchContext.Provider>
-    </ThemeStateContext.Provider>
+    <ThemeContext.Provider value={state}>{children}</ThemeContext.Provider>
   );
 };
 
@@ -141,11 +133,16 @@ const themeMatchMedia = `const theme = window.matchMedia(${JSON.stringify(
     : 'light';`;
 
 const clientThemeCode = `
+// hi there dear reader 👋
+// this is how I make certain we avoid a flash of the wrong theme. If you select
+// a theme, then I'll know what you want in the future and you'll not see this
+// script anymore.
 ;(() => {
   ${themeMatchMedia}
   const cl = document.documentElement.classList;
   const themeAlreadyApplied = cl.contains('light') || cl.contains('dark');
   if (themeAlreadyApplied) {
+    // The theme is already applied...
     // this script shouldn't exist if the theme is already applied!
     console.warn(
       "Hi there, could you let me know you're seeing this message? Thanks!",
@@ -153,6 +150,7 @@ const clientThemeCode = `
   } else {
     cl.add(theme);
   }
+
   const meta = document.querySelector('meta[name=color-scheme]');
   if (meta) {
     if (theme === 'dark') {
@@ -165,29 +163,32 @@ const clientThemeCode = `
       "Hey, could you let me know you're seeing this message? Thanks!",
     );
   }
-})();`;
+})();`
+  // Remove double slash comments & replace excess white space with a single space.
+  .replaceAll(/((?<=[^:])\/\/.*|\s)+/g, ' ')
+  .trim();
 
 type ThemeHeadProps = {
   isSsrTheme: boolean;
 };
 
 export const ThemeHead: FC<ThemeHeadProps> = ({isSsrTheme}) => {
-  const theme = useThemeState();
+  const [theme] = useTheme();
 
   return (
     <>
       {/*
-                On the server, "theme" might be `null`, so clientThemeCode ensures that
-                this is correct before hydration.
-            */}
+          On the server, "theme" might be `null`, so clientThemeCode ensures that
+          this is correct before hydration.
+      */}
       <meta
         content={theme === 'light' ? 'light dark' : 'dark light'}
         name="color-scheme"
       />
       {/*
-                If we know what the theme is from the server then we don't need
-                to do fancy tricks prior to hydration to make things match.
-              */}
+        If we know what the theme is from the server then we don't need
+        to do fancy tricks prior to hydration to make things match.
+      */}
       {isSsrTheme ? null : (
         <script
           // NOTE: we cannot use type="module" because that automatically makes

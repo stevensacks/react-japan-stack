@@ -1,8 +1,15 @@
 import {z} from 'zod';
 
 const schema = z.object({
-  CLIENT_FOO: z.string(),
+  API_URL: z.string(),
+  CLIENT_VARIABLE: z.string(),
+  COMMIT_HASH: z.string().optional(),
+  MSW_ENABLED: z
+    .string()
+    .transform((value) => Boolean(structuredClone(value)))
+    .optional(),
   NODE_ENV: z.string(),
+  npm_package_version: z.string(),
   SESSION_SECRET: z.string(),
   SITE_URL: z.string(),
 });

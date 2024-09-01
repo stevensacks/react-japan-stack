@@ -13,6 +13,17 @@ import {hydrateRoot} from 'react-dom/client';
 import {getInitialNamespaces} from 'remix-i18next/client';
 import i18n from './i18n';
 
+const prepareApp = async () => {
+  if (
+    window.process?.env.NODE_ENV === 'development' &&
+    window.process?.env.MSW_ENABLED === true
+  ) {
+    const {worker} = await import('../test/worker');
+
+    return worker.start({onUnhandledRequest: 'bypass'});
+  }
+};
+
 const hydrate = async () => {
   await i18next
     .use(initReactI18next)
@@ -26,15 +37,17 @@ const hydrate = async () => {
       ns: getInitialNamespaces(),
     });
 
-  startTransition(() => {
-    hydrateRoot(
-      document,
-      <I18nextProvider i18n={i18next}>
-        <StrictMode>
-          <RemixBrowser />
-        </StrictMode>
-      </I18nextProvider>
-    );
+  prepareApp().then(() => {
+    startTransition(() => {
+      hydrateRoot(
+        document,
+        <I18nextProvider i18n={i18next}>
+          <StrictMode>
+            <RemixBrowser />
+          </StrictMode>
+        </I18nextProvider>
+      );
+    });
   });
 };
 

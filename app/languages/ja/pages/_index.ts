@@ -1,6 +1,7 @@
 export default {
   meta: {
-    description: 'トップページの説明',
-    title: 'トップページ',
+    description: 'インデックスページの説明',
+    title: 'インデックスページ',
   },
+  viewThings: '物事を見る',
 };

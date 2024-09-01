@@ -14,7 +14,6 @@ import {getThemeSession} from '~/sessions.server/theme';
 import State from '~/state';
 import {useTheme} from '~/state/theme';
 import tailwind from '~/styles/tailwind.css?url';
-import type {Thing} from '~/types';
 import {isProductionHost} from '~/utils/http.server';
 import ErrorBoundary from './components/ErrorBoundary';
 import {envClient} from './env.server';
@@ -34,15 +33,12 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
   const headers = new Headers();
   headers.set('Vary', 'Cookie');
 
-  const thing: Thing = {id: '1', name: 'Thing'};
-
   return json(
     {
       ENV: envClient,
       language,
       noIndex: !isProduction,
       theme: themeSession.getTheme(),
-      thing,
     },
     {headers}
   );
@@ -60,6 +56,10 @@ const App: FC = () => {
 
   const {ENV, language, noIndex} = data;
 
+  // This hook will change the i18n instance language to the current language
+  // detected by the loader, this way, when we do something to change the
+  // language, this language will change and i18next will load the correct
+  // translation files
   useChangeLanguage(language);
 
   return (
@@ -86,7 +86,7 @@ const AppWithState = () => {
   const data = useLoaderData<typeof loader>();
 
   return (
-    <State theme={data.theme} thing={data.thing}>
+    <State theme={data.theme}>
       <App />
     </State>
   );

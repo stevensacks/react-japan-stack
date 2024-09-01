@@ -9,6 +9,7 @@ export const languageStorage = createCookieSessionStorage({
     path: '/',
     sameSite: 'lax',
     secrets: [env.SESSION_SECRET],
+    // You cannot set true in Safari unless you're in production
     secure: env.NODE_ENV === 'production',
   },
 });

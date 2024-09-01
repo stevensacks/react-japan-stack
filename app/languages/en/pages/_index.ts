@@ -3,4 +3,5 @@ export default {
     description: 'Description of the index page',
     title: 'Index Page',
   },
+  viewThings: 'View Things',
 };

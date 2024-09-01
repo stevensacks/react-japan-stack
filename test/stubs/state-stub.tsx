@@ -2,15 +2,15 @@
 import type {ReactRenderer} from '@storybook/react';
 import type {PartialStoryFn} from '@storybook/types';
 import State from '~/state';
-import type {Maybe, Thing} from '~/types';
+import type {Maybe} from '~/types';
 
 type StateDecoratorProps = {
-  thing?: Maybe<Thing>;
+  example?: Maybe<string>;
 };
 
 const decorator =
   (props?: StateDecoratorProps) => (Story: PartialStoryFn<ReactRenderer>) => (
-    <State thing={props?.thing}>
+    <State example={props?.example}>
       <Story />
     </State>
   );
