@@ -4,8 +4,9 @@ export default {
     days_one: '{{count}} day',
     days_other: '{{count}} days',
   },
+  license: 'Released under GPL-3.0 license',
   meta: {
-    siteName: 'GAIA React',
+    siteName: 'GAIA Framework',
   },
   next: 'Next',
   previous: 'Previous',

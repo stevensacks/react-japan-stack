@@ -4,8 +4,9 @@ export default {
     days_one: '{{count}}日',
     days_other: '{{count}}日',
   },
+  license: 'GPL-3.0ライセンスに基づいてリリース',
   meta: {
-    siteName: 'GAIA React',
+    siteName: 'GAIA Framework',
   },
   next: '次へ',
   previous: '前へ',

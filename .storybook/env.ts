@@ -1,5 +1,7 @@
 // @ts-ignore
 window.process.env = {
-  GOOGLE_MAPS_API_KEY: import.meta.env.GOOGLE_MAPS_API_KEY,
-  GOOGLE_MAPS_MAP_ID: import.meta.env.GOOGLE_MAPS_MAP_ID,
+  API_URL: import.meta.env.API_URL,
+  MSW_ENABLED: import.meta.env.MSW_ENABLED,
+  SESSION_SECRET: import.meta.env.SESSION_SECRET,
+  SITE_URL: import.meta.env.SITE_URL,
 };

@@ -2,8 +2,10 @@ import {z} from 'zod';
 
 const schema = z.object({
   API_URL: z.string(),
-  CLIENT_VARIABLE: z.string(),
-  COMMIT_HASH: z.string().optional(),
+  COMMIT_SHA: z
+    .string()
+    .optional()
+    .transform((value) => value?.slice(0, 6)),
   MSW_ENABLED: z
     .string()
     .transform((value) => Boolean(structuredClone(value)))

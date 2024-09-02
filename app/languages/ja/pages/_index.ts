@@ -1,7 +1,9 @@
 export default {
+  authExample: '認証例',
   meta: {
     description: 'インデックスページの説明',
     title: 'インデックスページ',
   },
-  viewThings: '物事を見る',
+  serviceExample: 'サービス例',
+  title: 'Reactフレームワーク',
 };

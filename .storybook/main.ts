@@ -41,12 +41,12 @@ const config: StorybookConfig = {
   viteFinal: async (viteConfig, {configType}) =>
     mergeConfig(viteConfig, {
       define: {
-        'import.meta.env.GOOGLE_MAPS_API_KEY': JSON.stringify(
-          process.env.GOOGLE_MAPS_API_KEY
+        'import.meta.env.API_URL': JSON.stringify(process.env.API_URL),
+        'import.meta.env.MSW_ENABLED': JSON.stringify(process.env.MSW_ENABLED),
+        'import.meta.env.SESSION_SECRET': JSON.stringify(
+          process.env.SESSION_SECRET
         ),
-        'import.meta.env.GOOGLE_MAPS_MAP_ID': JSON.stringify(
-          process.env.GOOGLE_MAPS_MAP_ID
-        ),
+        'import.meta.env.SITE_URL': JSON.stringify(process.env.SITE_URL),
       },
       plugins: [
         tsconfigPaths(),

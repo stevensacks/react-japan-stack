@@ -22,7 +22,7 @@ const customColors = Object.keys(colors).reduce(
     return acc;
   },
   // replace gray with grey
-  {grey: colors.gray}
+  {grey: colors.neutral}
 );
 
 /** @type {TailwindConfig} */
@@ -40,6 +40,10 @@ export default {
       center: true,
     },
     extend: {
+      fontFamily: {
+        mono: ['Source Code Pro', 'monospace'],
+        sans: ['Inter', 'sans-serif'],
+      },
       screens: {
         sm: '400px',
       },

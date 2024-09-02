@@ -1,7 +1,7 @@
 import type {LoaderFunctionArgs, MetaFunction} from '@remix-run/node';
 import {json} from '@remix-run/node';
-import VerifyEmailPage from 'app/pages/Session/Profile/VerifyEmailPage';
 import i18next from '~/i18next.server';
+import VerifyEmailPage from '~/pages/Session/Profile/VerifyEmailPage';
 
 export const loader = async ({request}: LoaderFunctionArgs) => {
   const t = await i18next.getFixedT(request, 'pages');
