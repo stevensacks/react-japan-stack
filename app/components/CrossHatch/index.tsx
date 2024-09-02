@@ -9,7 +9,7 @@ type CrossHatchProps = {
 const CrossHatch: FC<CrossHatchProps> = ({className}) => (
   <div
     className={twJoin(
-      '-z-10 bg-gradient-to-b from-[#373737] to-[#141414]',
+      'bg-gradient-to-b from-[#373737] to-[#141414]',
       className
     )}
   >

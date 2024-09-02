@@ -7,7 +7,7 @@ import StorybookLogo from '~/components/Logos/StorybookLogo';
 import VitestLogo from '~/components/Logos/VitestLogo';
 
 const TestSuite: FC = () => (
-  <div className="flex items-center gap-4">
+  <>
     <a
       aria-label="Storybook"
       className="plain-link"
@@ -62,7 +62,7 @@ const TestSuite: FC = () => (
     >
       <PlaywrightLogo height={32} />
     </a>
-  </div>
+  </>
 );
 
 export default TestSuite;

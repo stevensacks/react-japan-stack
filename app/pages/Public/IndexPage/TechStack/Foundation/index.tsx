@@ -8,7 +8,7 @@ import TailwindLogo from '~/components/Logos/TailwindLogo';
 import ZodLogo from '~/components/Logos/ZodLogo';
 
 const Foundation: FC = () => (
-  <div className="flex items-center gap-4">
+  <>
     <a
       aria-label="Remix Run"
       className="plain-link text-white"
@@ -25,7 +25,7 @@ const Foundation: FC = () => (
       rel="noreferrer"
       target="_blank"
     >
-      <TailwindLogo height={32} />
+      <TailwindLogo height={28} />
     </a>
     <a
       aria-label="React-i18next"
@@ -43,7 +43,7 @@ const Foundation: FC = () => (
       rel="noreferrer"
       target="_blank"
     >
-      <ZodLogo height={32} />
+      <ZodLogo height={38} />
     </a>
     <a
       aria-label="RVF"
@@ -63,7 +63,7 @@ const Foundation: FC = () => (
     >
       <FontAwesomeIcon fixedWidth={true} icon={faFontAwesome} />
     </a>
-  </div>
+  </>
 );
 
 export default Foundation;

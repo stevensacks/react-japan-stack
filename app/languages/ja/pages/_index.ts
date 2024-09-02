@@ -5,5 +5,10 @@ export default {
     title: 'インデックスページ',
   },
   serviceExample: 'サービス例',
+  techStack: {
+    codeQuality: 'コード品質',
+    foundation: '基盤',
+    testSuite: 'テストスイート',
+  },
   title: 'Reactフレームワーク',
 };

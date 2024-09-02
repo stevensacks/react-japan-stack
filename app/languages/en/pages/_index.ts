@@ -5,5 +5,10 @@ export default {
     title: 'Index Page',
   },
   serviceExample: 'Service Example',
+  techStack: {
+    codeQuality: 'Code Quality',
+    foundation: 'Foundation',
+    testSuite: 'Test Suite',
+  },
   title: 'React Framework',
 };

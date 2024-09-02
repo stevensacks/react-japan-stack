@@ -5,7 +5,7 @@ import StylelintLogo from '~/components/Logos/StylelintLogo';
 import TSLogo from '~/components/Logos/TSLogo';
 
 const CodeQuality: FC = () => (
-  <div className="flex items-center gap-4">
+  <>
     <a
       aria-label="TypeScript"
       className="plain-link"
@@ -42,7 +42,7 @@ const CodeQuality: FC = () => (
     >
       <StylelintLogo height={26} />
     </a>
-  </div>
+  </>
 );
 
 export default CodeQuality;
