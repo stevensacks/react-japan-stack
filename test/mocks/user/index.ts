@@ -1,3 +1,4 @@
+import {primaryKey} from '@mswjs/data';
 import {z} from 'zod';
 
 export const serverUserSchema = z.object({
@@ -7,6 +8,12 @@ export const serverUserSchema = z.object({
 });
 
 export type ServerUser = z.infer<typeof serverUserSchema>;
+
+const schema = {
+  family_name: String,
+  given_name: String,
+  id: primaryKey(String),
+};
 
 const en: ServerUser = {
   family_name: 'Smith',
@@ -20,4 +27,4 @@ const ja: ServerUser = {
   id: '2',
 };
 
-export default {en, ja} as Record<string, ServerUser>;
+export default {en, ja, schema};

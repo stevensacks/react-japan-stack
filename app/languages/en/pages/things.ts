@@ -3,6 +3,7 @@ export default {
   delete: 'Delete',
   description: 'Description',
   edit: 'Edit',
+  lastUpdated: 'Last updated',
   meta: {
     description: 'Description of the things page',
     title: 'Things',

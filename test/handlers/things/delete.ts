@@ -1,11 +1,11 @@
-import {http} from 'msw';
-import things from 'test/mocks/things';
-import {getLanguage} from 'test/utils';
+import {delay, http} from 'msw';
+import database from 'test/mocks/database';
+import {DELAY, getLanguage} from 'test/utils';
 import {THINGS_URL} from '~/services/api/things/urls';
 
 export default http.delete(
   `${process.env.API_URL}${THINGS_URL}/:id`,
-  ({params, request}) => {
+  async ({params, request}) => {
     if (!params.id) {
       return new Response(
         JSON.stringify({
@@ -15,9 +15,15 @@ export default http.delete(
       );
     }
 
-    const thing = things[getLanguage(request)].find(({id}) => id === params.id);
+    const deletedThing = database[getLanguage(request)].things.delete({
+      where: {
+        id: {
+          equals: String(params.id),
+        },
+      },
+    });
 
-    if (!thing) {
+    if (!deletedThing) {
       return new Response(
         JSON.stringify({
           error: `Thing with id "${params.id}" not found`,
@@ -26,11 +32,8 @@ export default http.delete(
       );
     }
 
-    return new Response(
-      JSON.stringify({
-        data: things[getLanguage(request)].filter(({id}) => id !== params.id),
-      }),
-      {status: 200}
-    );
+    await delay(DELAY);
+
+    return new Response(null, {status: 204});
   }
 );

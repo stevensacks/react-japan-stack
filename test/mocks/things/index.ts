@@ -1,3 +1,4 @@
+import {nullable, primaryKey} from '@mswjs/data';
 import date from 'test/utils';
 import {z} from 'zod';
 
@@ -10,6 +11,14 @@ export const serverThingSchema = z.object({
 });
 
 export type ServerThing = z.infer<typeof serverThingSchema>;
+
+const schema = {
+  created_at: String,
+  description: String,
+  id: primaryKey(String),
+  name: String,
+  updated_at: nullable(String),
+};
 
 const en: ServerThing[] = [
   {
@@ -45,4 +54,4 @@ const ja: ServerThing[] = [
   },
 ];
 
-export default {en, ja} as Record<string, ServerThing[]>;
+export default {en, ja, schema};

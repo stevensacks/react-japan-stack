@@ -1,9 +1,13 @@
 import type {FC} from 'react';
 import {useTranslation} from 'react-i18next';
 import {faPencil, faTrash} from '@fortawesome/free-solid-svg-icons';
+import {Form, useNavigation} from '@remix-run/react';
+import {format} from 'date-fns';
+import {ja} from 'date-fns/locale';
 import {twMerge} from 'tailwind-merge';
 import Button from '~/components/Button';
 import LinkButton from '~/components/LinkButton';
+import useBreakpoint from '~/hooks/useBreakpoint';
 import type {Thing} from '~/services/api/things/types';
 
 type ThingCardProps = {
@@ -11,35 +15,54 @@ type ThingCardProps = {
   thing: Thing;
 };
 
+const formatDate = (date: string, language: string) =>
+  format(new Date(date), 'P p', {locale: language === 'en' ? undefined : ja});
+
 const ThingCard: FC<ThingCardProps> = ({className, thing}) => {
-  const {t} = useTranslation('pages', {keyPrefix: 'things'});
+  const {
+    i18n: {language},
+    t,
+  } = useTranslation('pages', {keyPrefix: 'things'});
+
+  const {formData, state} = useNavigation();
+  const isSubmitting =
+    state === 'submitting' && formData?.get('id') === thing.id;
+
+  const showButtonLabels = useBreakpoint('md');
 
   return (
     <div
       className={twMerge(
-        'bg-secondary flex items-center justify-between rounded-md border border-grey-500 p-4',
+        'bg-secondary flex justify-between gap-8 rounded-md border border-grey-500 p-4',
         className
       )}
     >
       <div>
-        <div className="text-2xl text-blue-600 dark:text-blue-500">
+        <div className="text-pretty text-xl text-blue-600 dark:text-blue-400">
           {thing.name}
         </div>
-        <div>{thing.description}</div>
+        <div className="text-pretty">{thing.description}</div>
+        <div className="mt-0.5 text-pretty text-xs text-grey-500 dark:text-grey-400">
+          {t('lastUpdated')}:{' '}
+          {formatDate(thing.updatedAt ?? thing.createdAt, language)}
+        </div>
       </div>
-      <div className="space-x-4">
-        <LinkButton
-          className="inline-block"
-          icon={faPencil}
-          size="sm"
-          to={`/things/${thing.id}`}
-        >
-          {t('edit')}
+      <Form className="flex flex-col gap-4 pt-1" method="DELETE">
+        <LinkButton icon={faPencil} size="xs" to={`/things/${thing.id}`}>
+          {showButtonLabels ? t('edit') : null}
         </LinkButton>
-        <Button icon={faTrash} size="sm" variant="destructive">
-          {t('delete')}
+        <Button
+          icon={faTrash}
+          isLoading={isSubmitting}
+          name="id"
+          size="xs"
+          type="submit"
+          value={thing.id}
+          variant="destructive"
+        >
+          {showButtonLabels ? t('delete') : null}
         </Button>
-      </div>
+      </Form>
     </div>
   );
 };

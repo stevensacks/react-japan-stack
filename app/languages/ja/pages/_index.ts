@@ -9,6 +9,7 @@ export default {
     codeQuality: 'コード品質',
     foundation: '基盤',
     testSuite: 'テストスイート',
+    title: 'テックスタック',
   },
   title: 'Reactフレームワーク',
 };

@@ -28,15 +28,6 @@ const Foundation: FC = () => (
       <TailwindLogo height={28} />
     </a>
     <a
-      aria-label="React-i18next"
-      className="plain-link"
-      href="https://react.i18next.com/"
-      rel="noreferrer"
-      target="_blank"
-    >
-      <I18NextLogo height={32} />
-    </a>
-    <a
       aria-label="Zod"
       className="plain-link"
       href="https://zod.dev/"
@@ -53,6 +44,15 @@ const Foundation: FC = () => (
       target="_blank"
     >
       <RVFLogo height={26} />
+    </a>
+    <a
+      aria-label="React-i18next"
+      className="plain-link"
+      href="https://react.i18next.com/"
+      rel="noreferrer"
+      target="_blank"
+    >
+      <I18NextLogo height={32} />
     </a>
     <a
       aria-label="Font Awesome"

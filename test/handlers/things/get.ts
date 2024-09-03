@@ -1,5 +1,5 @@
 import {http} from 'msw';
-import things from 'test/mocks/things';
+import database from 'test/mocks/database';
 import {getLanguage} from 'test/utils';
 import {THINGS_URL} from '~/services/api/things/urls';
 
@@ -15,9 +15,15 @@ const one = http.get(
       );
     }
 
-    const thing = things[getLanguage(request)].find(({id}) => id === params.id);
+    const data = database[getLanguage(request)].things.findFirst({
+      where: {
+        id: {
+          equals: String(params.id),
+        },
+      },
+    });
 
-    if (!thing) {
+    if (!data) {
       return new Response(
         JSON.stringify({
           error: `Thing with id "${params.id}" not found`,
@@ -26,14 +32,18 @@ const one = http.get(
       );
     }
 
-    return new Response(JSON.stringify({data: thing}));
+    return new Response(JSON.stringify({data}));
   }
 );
 
 const all = http.get(
   `${process.env.API_URL}${THINGS_URL}`,
   ({request}) =>
-    new Response(JSON.stringify({data: things[getLanguage(request)]}))
+    new Response(
+      JSON.stringify({
+        data: database[getLanguage(request)].things.getAll(),
+      })
+    )
 );
 
 export default [one, all];

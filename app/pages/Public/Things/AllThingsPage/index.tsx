@@ -1,15 +1,24 @@
 import type {FC} from 'react';
+import {useTranslation} from 'react-i18next';
 import {twJoin} from 'tailwind-merge';
-import ThingsGrid from '~/pages/Public/Things/AllThingsPage/ThingsGrid';
+import LinkButton from '~/components/LinkButton';
+import ThingsGrid from './ThingsGrid';
 
 type AllThingsPageProps = {
   className?: string;
 };
 
-const AllThingsPage: FC<AllThingsPageProps> = ({className}) => (
-  <section className={twJoin('container space-y-8 py-12', className)}>
-    <ThingsGrid />
-  </section>
-);
+const AllThingsPage: FC<AllThingsPageProps> = ({className}) => {
+  const {t} = useTranslation('pages', {keyPrefix: 'things'});
+
+  return (
+    <section className={twJoin('container space-y-8 py-12', className)}>
+      <ThingsGrid />
+      <div className="flex justify-end px-4">
+        <LinkButton to="/things/create">{t('create')}</LinkButton>
+      </div>
+    </section>
+  );
+};
 
 export default AllThingsPage;

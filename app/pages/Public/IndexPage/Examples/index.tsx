@@ -7,7 +7,7 @@ const Examples: FC = () => {
   const {t} = useTranslation('pages', {keyPrefix: 'index'});
 
   return (
-    <div className="mt-8 flex items-center justify-center gap-8">
+    <div className="mt-2 flex items-center justify-center gap-8">
       <LinkButton
         className="inline-block"
         icon={faCloudArrowUp}

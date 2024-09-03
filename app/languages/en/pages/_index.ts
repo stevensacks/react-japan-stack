@@ -9,6 +9,7 @@ export default {
     codeQuality: 'Code Quality',
     foundation: 'Foundation',
     testSuite: 'Test Suite',
+    title: 'Tech Stack',
   },
   title: 'React Framework',
 };

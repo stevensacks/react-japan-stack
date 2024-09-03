@@ -1,8 +1,24 @@
-import type {LoaderFunctionArgs, MetaFunction} from '@remix-run/node';
-import {json} from '@remix-run/node';
+import type {
+  ActionFunction,
+  LoaderFunctionArgs,
+  MetaFunction,
+} from '@remix-run/node';
+import {json, redirect} from '@remix-run/node';
 import {useLoaderData} from '@remix-run/react';
 import ThingPage from '~/pages/Public/Things/ThingPage';
-import {getThingById} from '~/services/api/things/requests.server';
+import {getThingById, updateThing} from '~/services/api/things/requests.server';
+
+export const action: ActionFunction = async ({request}) => {
+  if (request.method === 'PUT') {
+    const formData = await request.formData();
+
+    await updateThing(formData, request);
+
+    return redirect('/things', {status: 303});
+  }
+
+  return json(null, {status: 400});
+};
 
 export const loader = async ({params, request}: LoaderFunctionArgs) => {
   const thing = await getThingById(params.id!, request);

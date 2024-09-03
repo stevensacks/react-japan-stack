@@ -18,29 +18,22 @@ export const getThingById = async (
   return thingSchema.parse(data);
 };
 
-export const insertThing = async (
-  thing: Thing,
+export const createThing = async (
+  data: FormData,
   request: Request
-): Promise<Thing[]> => {
-  const data = await api(THINGS_URL, {data: thing, method: 'POST', request});
-
-  return data.map(thingSchema.parse);
-};
+): Promise<Thing> => api(THINGS_URL, {data, method: 'POST', request});
 
 export const updateThing = async (
-  thing: Thing,
+  data: FormData,
   request: Request
-): Promise<Thing> => {
-  const data = await api(THINGS_URL, {data: thing, method: 'PUT', request});
-
-  return thingSchema.parse(data);
-};
+): Promise<Thing> =>
+  api(`${THINGS_URL}/${data.get('id')}`, {
+    data,
+    method: 'PUT',
+    request,
+  });
 
 export const deleteThing = async (
   id: string,
   request: Request
-): Promise<Thing[]> => {
-  const data = await api(THINGS_URL, {method: 'DELETE', params: {id}, request});
-
-  return data.map(thingSchema.parse);
-};
+): Promise<null> => api(`${THINGS_URL}/${id}`, {method: 'DELETE', request});

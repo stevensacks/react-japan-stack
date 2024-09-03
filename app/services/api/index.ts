@@ -4,10 +4,9 @@ import {toHeadersObject} from '~/utils/http';
 import {compact, toCamelCase} from '~/utils/object';
 import {
   API_USES_SNAKE_CASE,
-  cleanData,
-  encodeData,
   getAcceptLanguage,
   getBaseUrl,
+  getSafeData,
   getSafeParams,
   getSafeUrl,
 } from './utils';
@@ -21,11 +20,12 @@ export const Accept = {
 export const ContentType = {
   FORM_URLENCODED: 'application/x-www-form-urlencoded',
   JSON: 'application/json',
+  MULTIPART_FORM_DATA: 'multipart/form-data',
 } as const;
 
 type ApiOptions = {
-  accept?: typeof Accept;
-  contentType?: typeof ContentType;
+  accept?: (typeof Accept)[keyof typeof Accept];
+  contentType?: (typeof ContentType)[keyof typeof ContentType];
   data?: FormData | Record<string, unknown>;
   headers?: Headers | Record<string, string>;
   language?: Language;
@@ -50,13 +50,7 @@ export const api = async (url: string, options?: ApiOptions): Promise<any> => {
 
   const safeParams = getSafeParams(params);
 
-  let body: FormData | string | undefined;
-
-  if (contentType === ContentType.JSON) {
-    body = cleanData(data);
-  } else {
-    body = encodeData(data);
-  }
+  const body = getSafeData(data);
 
   const q = url.includes('?') ? '&' : '?';
   const search = safeParams ? `${q}${safeParams}` : '';
@@ -68,10 +62,10 @@ export const api = async (url: string, options?: ApiOptions): Promise<any> => {
     ...toHeadersObject(headers),
     Accept: accept,
     'Accept-Language': await getAcceptLanguage({language, request}),
-    'Content-Type': contentType,
+    // Let Content-Type be automatically determined when body instanceof FormData
+    'Content-Type': body instanceof FormData ? undefined : contentType,
   });
 
-  // We don't catch because it's better to handle errors in the caller
   return fetch(
     `${safeUrl}${search}`,
     compact({
@@ -79,17 +73,34 @@ export const api = async (url: string, options?: ApiOptions): Promise<any> => {
       headers: cleanHeaders,
       method,
     })
-  ).then(async (response) => {
-    if (accept === Accept.JSON) {
-      const originalCaseData = await response.json();
-
-      if (preserveCase || !API_USES_SNAKE_CASE) {
-        return originalCaseData.data;
+  )
+    .then(async (response) => {
+      if (
+        response.status === 204 ||
+        response.status === 205 ||
+        response.status === 208
+      ) {
+        return null;
       }
 
-      return toCamelCase(originalCaseData.data);
-    }
+      if (accept === Accept.JSON) {
+        const originalCaseData = await response.json();
 
-    return response;
-  });
+        if (preserveCase || !API_USES_SNAKE_CASE) {
+          return originalCaseData.data;
+        }
+
+        return toCamelCase(originalCaseData.data);
+      }
+
+      return response;
+    })
+    .catch((error) => {
+      if (process.env.NODE_ENV !== 'production') {
+        // eslint-disable-next-line no-console
+        console.error(error);
+      }
+      // We pass it on because it's better to handle errors in the caller
+      throw error;
+    });
 };

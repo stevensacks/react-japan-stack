@@ -1,8 +1,6 @@
-/* eslint-disable sonarjs/function-return-type,@typescript-eslint/no-explicit-any,max-lines */
-import {isObject, snakeCase} from 'lodash';
+/* eslint-disable sonarjs/function-return-type,@typescript-eslint/no-explicit-any */
 import type {Language} from '~/languages';
 import {getLanguageSession} from '~/sessions.server/language';
-import {range} from '~/utils/array';
 import {compactFormData} from '~/utils/dom';
 import {compact, toSnakeCase} from '~/utils/object';
 
@@ -10,20 +8,9 @@ export const API_USES_SNAKE_CASE = true;
 
 export const API_EXPECTS_TRAILING_SLASH = false;
 
-export const cleanData = (data?: FormData | Record<string, unknown>) => {
+export const getSafeData = (data?: FormData | Record<string, unknown>) => {
   if (!data) {
     return undefined;
-  }
-
-  if (process.env.NODE_ENV === 'test') {
-    const compacted = compact(
-      data instanceof FormData ? Object.fromEntries(data.entries()) : data,
-      {keepFalsy: true}
-    );
-
-    return JSON.stringify(
-      API_USES_SNAKE_CASE ? toSnakeCase(compacted) : compacted
-    );
   }
 
   if (data instanceof FormData) {
@@ -35,88 +22,6 @@ export const cleanData = (data?: FormData | Record<string, unknown>) => {
   return JSON.stringify(
     API_USES_SNAKE_CASE ? toSnakeCase(compacted) : compacted
   );
-};
-
-const toFormData = (jsonData: Record<string, any>) => {
-  const formData = new FormData();
-
-  Object.entries(jsonData).forEach(([key, value]) => {
-    const casedKey = API_USES_SNAKE_CASE ? snakeCase(key) : key;
-
-    if (isObject(value)) {
-      if (value instanceof FileList) {
-        // add all files from FileList
-        range(0, value.length - 1).forEach((index) => {
-          formData.append(casedKey, value[index]);
-        });
-      } else {
-        // Other
-        Object.keys(value).forEach((item) => {
-          formData.append(casedKey, item);
-        });
-      }
-    } else {
-      formData.append(casedKey, value);
-    }
-  });
-
-  return formData;
-};
-
-// For testing inside Vitest
-const toParams = (formData: FormData | Record<string, unknown>) => {
-  const params = new URLSearchParams();
-  const data =
-    formData instanceof FormData ?
-      Object.fromEntries(formData.entries())
-    : formData;
-  Object.entries(data).forEach(([key, value]: [string, any]) => {
-    if (value instanceof FileList) {
-      const files: string[] = [];
-      range(0, value.length - 1).forEach((index) => {
-        files.push(value[index].name);
-      });
-      params.append(key, files.join(','));
-    } else if (typeof value === 'string') {
-      params.append(key, value);
-    } else if (Array.isArray(value)) {
-      params.append(key, value.join(','));
-    } else {
-      // Other objects
-      params.append(key, Object.keys(value).join(','));
-    }
-  });
-
-  return params.toString();
-};
-
-export const encodeData = (data?: FormData | Record<string, unknown>) => {
-  if (!data) {
-    return undefined;
-  }
-
-  if (process.env.NODE_ENV === 'test') {
-    return toParams(data);
-  }
-
-  if (data instanceof FormData) {
-    if (!API_USES_SNAKE_CASE) {
-      return data;
-    }
-
-    const snakeCased = new FormData();
-
-    // eslint-disable-next-line no-restricted-syntax
-    for (const pair of data.entries()) {
-      const [key, value] = pair;
-
-      snakeCased.append(snakeCase(key), value);
-    }
-
-    return snakeCased;
-  }
-
-  return toFormData(data);
 };
 
 export const getSafeParams = (params?: Record<string, unknown>) => {

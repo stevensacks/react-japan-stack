@@ -9,12 +9,12 @@ const ThingsGrid: FC = () => {
   const things = useThings();
 
   return things?.length ?
-      <div className="grid grid-cols-2 gap-8">
+      <div className="mx-auto grid max-w-screen-lg grid-cols-1 gap-8 px-4 md:grid-cols-2">
         {things.map((thing) => (
           <ThingCard key={thing.id} thing={thing} />
         ))}
       </div>
-    : <div className="text-grey-500">{t('none')}</div>;
+    : <div className="px-4">{t('none')}</div>;
 };
 
 export default ThingsGrid;
