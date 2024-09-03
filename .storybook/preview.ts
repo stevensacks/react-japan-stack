@@ -4,6 +4,7 @@ import {themes} from '@storybook/theming';
 import isChromatic from 'chromatic/isChromatic';
 import {DARK_MODE_EVENT_NAME} from 'storybook-dark-mode';
 import Chromatic from './decorators/chromatic';
+import Wrap from './decorators/wrap';
 import i18n from './i18next';
 import viewport from './viewport';
 import './env';
@@ -20,7 +21,7 @@ const isChromaticSnapshot =
   : false);
 
 const preview: Preview = {
-  decorators: isChromaticSnapshot ? [Chromatic] : [],
+  decorators: isChromaticSnapshot ? [Wrap, Chromatic] : [Wrap],
   initialGlobals: {
     locale: 'en',
     locales: {

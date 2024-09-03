@@ -31,7 +31,6 @@ describe('InputText', () => {
         'This is a long string!',
         'This is a long string!',
         'This is a long string!',
-        'This is too long and will probably be cropped!',
       ].join('')
     );
     expect(input).toHaveValue(

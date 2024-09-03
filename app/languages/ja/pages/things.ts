@@ -3,6 +3,7 @@ export default {
   delete: '削除',
   description: '説明',
   edit: '編集',
+  lastUpdated: '最終更新',
   meta: {
     description: '物事の説明ページ',
     title: '物事',

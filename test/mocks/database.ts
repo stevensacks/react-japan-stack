@@ -18,4 +18,4 @@ ja.user.create(user.ja);
 things.en.forEach(en.things.create);
 things.ja.forEach(ja.things.create);
 
-export default {en, ja};
+export default {en, ja} as Record<string, typeof en>;

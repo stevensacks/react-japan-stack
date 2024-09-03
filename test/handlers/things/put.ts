@@ -2,7 +2,7 @@ import {delay, http} from 'msw';
 import database from 'test/mocks/database';
 import date, {DELAY, getLanguage} from 'test/utils';
 import {THINGS_URL} from '~/services/api/things/urls';
-import {tryCatch} from '~/utils/functions';
+import {tryCatch} from '~/utils/function';
 
 export default http.put(
   `${process.env.API_URL}${THINGS_URL}/:id`,

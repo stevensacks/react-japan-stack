@@ -8,7 +8,8 @@ export const API_USES_SNAKE_CASE = true;
 
 export const API_EXPECTS_TRAILING_SLASH = false;
 
-export const getSafeData = (data?: FormData | Record<string, unknown>) => {
+//  Compact body with proper case for the request
+export const getBody = (data?: FormData | Record<string, unknown>) => {
   if (!data) {
     return undefined;
   }
@@ -24,13 +25,13 @@ export const getSafeData = (data?: FormData | Record<string, unknown>) => {
   );
 };
 
-export const getSafeParams = (params?: Record<string, unknown>) => {
+//  Compact params with proper case for the request
+export const getParams = (params?: Record<string, unknown>) => {
   if (!params) {
     return '';
   }
 
   const urlSearchParams = new URLSearchParams();
-
   const compactedParams = compact(params);
   const casedParams =
     API_USES_SNAKE_CASE ? toSnakeCase<any>(params) : compactedParams;
@@ -60,6 +61,22 @@ export const getSafeParams = (params?: Record<string, unknown>) => {
   return urlSearchParams.toString();
 };
 
+export const getBaseUrl = () => {
+  if (process.env.API_URL) {
+    // server api call
+    return process.env.API_URL;
+  }
+
+  if (typeof window !== 'undefined' && window.process.env.API_URL) {
+    // client api call
+    return window.process.env.API_URL;
+  }
+
+  // fallback
+  return '';
+};
+
+// Ensures leading and trailing slash as needed
 export const getSafeUrl = (url: string) => {
   const leadingSlash = url.startsWith('/') ? url : `/${url}`;
 
@@ -103,17 +120,4 @@ export const getAcceptLanguage = async ({
   }
 
   return language ?? 'en';
-};
-
-export const getBaseUrl = () => {
-  if (process.env.API_URL) {
-    return process.env.API_URL;
-  }
-
-  if (typeof window !== 'undefined' && window.process.env.API_URL) {
-    return window.process.env.API_URL;
-  }
-
-  // THIS SHOULD NEVER HAPPEN BECAUSE OF ZOD ENV PARSING (but just in case)
-  throw new Error('API_URL not defined');
 };

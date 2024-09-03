@@ -41,11 +41,11 @@ export const VARIANTS: Record<Variant, string> = {
     'bg-transparent hover:bg-grey-400/10 disabled:hover:bg-transparent dark:hover:bg-grey-500/10 dark:disabled:hover:bg-transparent',
   custom: '',
   destructive:
-    'border border-red-400 bg-red-500 text-white hover:bg-red-600 disabled:hover:bg-red-400 dark:border-red-500 dark:bg-red-600 dark:hover:bg-red-700 dark:disabled:hover:bg-red-600',
+    'border border-red-400 bg-red-500 text-white hover:bg-red-600 disabled:hover:bg-red-500 dark:border-red-500 dark:bg-red-600 dark:hover:bg-red-700 dark:disabled:hover:bg-red-600',
   primary:
     'border border-blue-400 bg-blue-500 text-white hover:bg-blue-600 disabled:hover:bg-blue-500 dark:border-blue-500 dark:bg-blue-600 dark:hover:bg-blue-700 dark:disabled:hover:bg-blue-600',
   secondary:
-    'border border-blue-600 bg-blue-700 text-white hover:bg-blue-800 disabled:hover:bg-blue-700 dark:border-blue-700 dark:bg-blue-800 dark:hover:bg-blue-900 dark:disabled:hover:bg-blue-800',
+    'border border-blue-500 bg-white text-blue-500 hover:bg-blue-50 disabled:hover:bg-white dark:border-blue-500 dark:bg-grey-900 dark:text-blue-100 dark:hover:bg-blue-900/15 dark:disabled:hover:bg-grey-900',
   tertiary:
     'border border-grey-400 bg-grey-500 text-white hover:bg-grey-600 disabled:hover:bg-grey-500 dark:border-grey-500 dark:bg-grey-600 dark:hover:bg-grey-700 dark:disabled:hover:bg-grey-600',
 };
@@ -114,7 +114,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           VARIANTS[variant],
           SIZES[size],
           icon && ICON_SIZES[size],
-          variant !== 'custom' && 'rounded-md',
+          variant !== 'custom' && 'rounded-md transition-colors duration-200',
           isLoading ? 'cursor-wait' : (
             'disabled:cursor-not-allowed disabled:opacity-50'
           ),

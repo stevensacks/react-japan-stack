@@ -15,17 +15,14 @@ const meta: Meta = {
   component: Spinner,
   parameters: {
     chromatic: {disableSnapshot: true},
+    wrap: 'p-4',
   },
   title: 'Components/Loaders/Spinner',
 };
 
 export default meta;
 
-const Template: StoryFn<SpinnerProps> = (args) => (
-  <div className="p-4">
-    <Spinner {...args} />
-  </div>
-);
+const Template: StoryFn<SpinnerProps> = (args) => <Spinner {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {

@@ -1,7 +1,7 @@
 import {describe, expect, test} from 'vitest';
-import {tryCatch} from '../functions';
+import {tryCatch} from '../function';
 
-describe('functions utils', () => {
+describe('function utils', () => {
   test('tryCatch result', async () => {
     expect(await tryCatch((value: number) => 10 / value, 5)).toEqual([
       2,

@@ -34,10 +34,6 @@ const config: StorybookConfig = {
 
   stories: ['../app/**/*.stories.tsx'],
 
-  typescript: {
-    reactDocgen: 'react-docgen-typescript',
-  },
-
   viteFinal: async (viteConfig, {configType}) =>
     mergeConfig(viteConfig, {
       define: {

@@ -11,6 +11,7 @@ const meta: Meta = {
   decorators: [stubs.remix()],
   parameters: {
     controls: {hideNoControlsWarning: true},
+    wrap: 'w-fit p-4',
   },
   title: 'Components/LinkButton',
 };
@@ -30,36 +31,34 @@ const variants: Variant[] = [
 const legends = ['text-xs', 'text-sm', 'text-base', 'text-lg', 'text-xl'];
 
 const render = (icon?: boolean, iconText?: boolean, disabled?: boolean) => (
-  <div className="w-fit p-4">
-    <div className="grid max-w-5xl grid-cols-11 items-center justify-items-start gap-x-8 gap-y-4">
-      <div />
-      {variants.map((variant) => (
-        <legend key={variant} className="col-span-2 text-sm capitalize">
-          {variant}
+  <div className="grid max-w-5xl grid-cols-11 items-center justify-items-start gap-x-8 gap-y-4">
+    <div />
+    {variants.map((variant) => (
+      <legend key={variant} className="col-span-2 text-sm capitalize">
+        {variant}
+      </legend>
+    ))}
+    {sizes.map((size) => (
+      <Fragment key={size}>
+        <legend className={legends.find((value) => value.includes(size))}>
+          {size}
         </legend>
-      ))}
-      {sizes.map((size) => (
-        <Fragment key={size}>
-          <legend className={legends.find((value) => value.includes(size))}>
-            {size}
-          </legend>
-          {variants.map((variant) => (
-            <LinkButton
-              key={variant}
-              aria-label={`${variant}-${size}`}
-              className="col-span-2 capitalize"
-              disabled={disabled}
-              icon={icon ? faStar : undefined}
-              size={size}
-              to="/"
-              variant={variant}
-            >
-              {!icon || iconText ? 'Label' : undefined}
-            </LinkButton>
-          ))}
-        </Fragment>
-      ))}
-    </div>
+        {variants.map((variant) => (
+          <LinkButton
+            key={variant}
+            aria-label={`${variant}-${size}`}
+            className="col-span-2 capitalize"
+            disabled={disabled}
+            icon={icon ? faStar : undefined}
+            size={size}
+            to="/"
+            variant={variant}
+          >
+            {!icon || iconText ? 'Label' : undefined}
+          </LinkButton>
+        ))}
+      </Fragment>
+    ))}
   </div>
 );
 

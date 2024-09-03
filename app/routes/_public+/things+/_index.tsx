@@ -23,7 +23,7 @@ export const action: ActionFunction = async ({request}) => {
     }
   }
 
-  return json(null, {status: 400});
+  return json(null);
 };
 
 export const loader = async ({request}: LoaderFunctionArgs) => {

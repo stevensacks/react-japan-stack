@@ -56,6 +56,7 @@
   },
   "devDependencies": {
     "@chromatic-com/storybook": "1.8.0",
+    "@faker-js/faker": "8.4.1",
     "@mswjs/data": "0.16.1",
     "@playwright-testing-library/test": "4.5.0",
     "@playwright/test": "1.46.1",

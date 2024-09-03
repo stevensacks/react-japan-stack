@@ -2,7 +2,7 @@ import type {Dispatch, FC, ReactNode, SetStateAction} from 'react';
 import {createContext, useContext, useEffect, useRef, useState} from 'react';
 import {useFetcher} from '@remix-run/react';
 import type {Maybe} from '~/types';
-import {noop} from '~/utils/functions';
+import {noop} from '~/utils/function';
 
 // Based on a combination of Kent C Dodds' and Matt Stobb's blog posts:
 // https://kentcdodds.com/blog/how-to-use-react-context-effectively

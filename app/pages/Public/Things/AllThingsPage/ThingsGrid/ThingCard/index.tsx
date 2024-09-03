@@ -16,7 +16,7 @@ type ThingCardProps = {
 };
 
 const formatDate = (date: string, language: string) =>
-  format(new Date(date), 'P p', {locale: language === 'en' ? undefined : ja});
+  format(new Date(date), 'P p', {locale: language === 'ja' ? ja : undefined});
 
 const ThingCard: FC<ThingCardProps> = ({className, thing}) => {
   const {
@@ -38,11 +38,16 @@ const ThingCard: FC<ThingCardProps> = ({className, thing}) => {
       )}
     >
       <div>
-        <div className="text-pretty text-xl text-blue-600 dark:text-blue-400">
+        <div
+          className="line-clamp-2 text-pretty text-xl text-blue-600 dark:text-blue-400"
+          title={thing.name}
+        >
           {thing.name}
         </div>
-        <div className="text-pretty">{thing.description}</div>
-        <div className="mt-0.5 text-pretty text-xs text-grey-500 dark:text-grey-400">
+        <div className="line-clamp-3 text-pretty" title={thing.description}>
+          {thing.description}
+        </div>
+        <div className="mt-2 text-pretty text-xs text-grey-500 dark:text-grey-400">
           {t('lastUpdated')}:{' '}
           {formatDate(thing.updatedAt ?? thing.createdAt, language)}
         </div>

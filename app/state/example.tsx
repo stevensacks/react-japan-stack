@@ -1,7 +1,7 @@
 import type {Dispatch, FC, ReactNode, SetStateAction} from 'react';
 import {createContext, useContext, useState} from 'react';
 import type {Maybe} from '~/types';
-import {noop} from '~/utils/functions';
+import {noop} from '~/utils/function';
 
 // Based on Kent C Dodds' blog post:
 // https://kentcdodds.com/blog/how-to-use-react-context-effectively

@@ -6,8 +6,8 @@ import {
   API_USES_SNAKE_CASE,
   getAcceptLanguage,
   getBaseUrl,
-  getSafeData,
-  getSafeParams,
+  getBody,
+  getParams,
   getSafeUrl,
 } from './utils';
 
@@ -48,21 +48,19 @@ export const api = async (url: string, options?: ApiOptions): Promise<any> => {
     request,
   } = options || {};
 
-  const safeParams = getSafeParams(params);
-
-  const body = getSafeData(data);
-
-  const q = url.includes('?') ? '&' : '?';
-  const search = safeParams ? `${q}${safeParams}` : '';
-
+  const body = getBody(data);
   const safeUrl =
     url.startsWith('http') ? url : `${getBaseUrl()}${getSafeUrl(url)}`;
+
+  const safeParams = getParams(params);
+  const q = url.includes('?') ? '&' : '?';
+  const search = safeParams ? `${q}${safeParams}` : '';
 
   const cleanHeaders = compact({
     ...toHeadersObject(headers),
     Accept: accept,
     'Accept-Language': await getAcceptLanguage({language, request}),
-    // Let Content-Type be automatically determined when body instanceof FormData
+    // Allow Content-Type to be automatically determined when body is FormData
     'Content-Type': body instanceof FormData ? undefined : contentType,
   });
 
@@ -97,10 +95,11 @@ export const api = async (url: string, options?: ApiOptions): Promise<any> => {
     })
     .catch((error) => {
       if (process.env.NODE_ENV !== 'production') {
+        // we output errors to the console in development/test environments
         // eslint-disable-next-line no-console
         console.error(error);
       }
-      // We pass it on because it's better to handle errors in the caller
+      // It's better to handle errors in the caller than globally
       throw error;
     });
 };

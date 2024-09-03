@@ -1,6 +1,4 @@
-printf "\x1b[33m"
 printf '\n🔎 Running pre-commit check\n'
-printf "\x1b[0m"
 
 declare HAS_APP_CHANGED=$(git diff --cached --name-only --diff-filter=ACDM | grep 'app/')
 declare HAS_TEST_CHANGED=$(git diff --cached --name-only --diff-filter=ACM | grep 'test/')
@@ -8,11 +6,14 @@ declare HAS_STORYBOOK_CHANGED=$(git diff --cached --name-only --diff-filter=ACM 
 
 if [[ $HAS_APP_CHANGED || $HAS_TEST_CHANGED || $HAS_STORYBOOK_CHANGED ]]
 then
+  printf "\x1b[33m"
+  printf "⚠️ Changes detected - running lint-staged\n\n"
+  printf "\x1b[0m"
 	npm run typecheck
 	npx lint-staged
 	npm run test:lint-staged
 else
-    printf "\x1b[32m"
-    printf "\n✅  No changed files -- skipping lint-staged\n"
-    printf "\x1b[0m"
+  printf "\x1b[32m"
+  printf "✅ No changed files -- skipping lint-staged\n\n"
+  printf "\x1b[0m"
 fi

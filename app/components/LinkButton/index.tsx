@@ -60,8 +60,8 @@ const LinkButton: FC<LinkButtonProps> = ({
       VARIANTS[variant].split('disabled:').join('')
     : VARIANTS[variant],
     SIZES[size],
-    variant !== 'custom' && 'rounded-md',
     icon && ICON_SIZES[size],
+    variant !== 'custom' && 'rounded-md transition-colors duration-200',
     disabled && 'cursor-not-allowed opacity-50 dark:opacity-30',
     className
   );
