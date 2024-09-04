@@ -7,7 +7,7 @@ declare HAS_STORYBOOK_CHANGED=$(git diff --cached --name-only --diff-filter=ACM 
 if [[ $HAS_APP_CHANGED || $HAS_TEST_CHANGED || $HAS_STORYBOOK_CHANGED ]]
 then
   printf "\x1b[33m"
-  printf "⚠️ Changes detected - running lint-staged\n\n"
+  printf "⚠️ Changes detected - running lint-staged\n"
   printf "\x1b[0m"
 	npm run typecheck
 	npx lint-staged
