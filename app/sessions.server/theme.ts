@@ -3,9 +3,6 @@ import {env} from '~/env.server';
 import type {Theme} from '~/state/theme';
 import {isSupportedTheme} from '~/state/theme';
 
-// Based on Matt Stobbs' blog post:
-// https://www.mattstobbs.com/remix-dark-mode/
-
 const themeStorage = createCookieSessionStorage({
   cookie: {
     httpOnly: true,
